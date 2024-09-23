@@ -1,0 +1,32 @@
+name: Clippy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  clippy:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: "5.10"
+
+      - uses: actions/checkout@v3
+
+      - name: Install clippy with stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - run: cargo clippy --manifest-path=Cargo.toml --all-targets --all-features -- -D warnings
